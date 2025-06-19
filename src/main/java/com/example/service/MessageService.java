@@ -7,6 +7,7 @@ import com.example.entity.Message;
 import com.example.repository.MessageRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessageService {
@@ -18,7 +19,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    //todo
+    //done
     public Message CreateMessage(Message message){
         if(message.getMessageText() == null || message.getMessageText().isBlank() || message.getMessageText().length() > 255){
             return null;
@@ -26,35 +27,40 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
+    //done
     public List<Message> retrieveAllMessages(){
         return messageRepository.findAll();
     }
 
-    //todo
+    //maybe
     public Message retrieveMessageByID(int id){
-        return messageRepository.getById(id);
+        if(messageRepository.findById(id) ==null){
+            return null;
+        }
+
+        return messageRepository.findById(id).orElse(null);
     }
 
-    //todo
+    //Done
     public int deleteMessageById(int id){
-        Message messageToDel = messageRepository.getById(id);
-        if(messageToDel==null){
+        Message messageToDel = messageRepository.findById(id).orElse(null);
+        if(messageToDel == null){
             return 0;
         }
         return messageRepository.deleteMessageById(id);
     }
 
-    //todo 
+    //Done
     public Message updateMessageById(int id, Message message){
-        Message msg = messageRepository.getById(id);
-        if( msg ==null){
+        Message msg = messageRepository.findById(id).orElse(null);
+        if( msg ==null || message.getMessageText() ==null || message.getMessageText().isBlank() || message.getMessageText().length() >255){
             return null;
         }
         msg.setMessageText(message.getMessageText());
         return messageRepository.save(msg);
     }
 
-    //todo
+    //Done
     public List<Message> retrieveMessagesByUser(int postedBy){   
         return messageRepository.findMessagesByPostedBy(postedBy);
     }

@@ -8,7 +8,7 @@ import com.example.entity.Message;
 
 public interface MessageRepository extends JpaRepository<Message, Integer>{
 
-    @Query("DELETE FROM Message m WHERE m.id = :id")
+    @Query("DELETE FROM Message m WHERE m.messageId = :id")
     int deleteMessageById(@Param("id") long id);
 
     List<Message> findMessagesByPostedBy(long postedBy);

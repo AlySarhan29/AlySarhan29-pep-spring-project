@@ -15,10 +15,17 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
+    public Account checkForDup(Account account){
+        if(accountRepository.findAccountByUsername(account.getUsername()) != null){
+            return null;
+        }
+        return account;
 
-    public Account Resgister(Account account){
+    }
+
+    public Account Register(Account account){
         Account ac = accountRepository.findAccountByUsername(account.getUsername());
-        if(ac != null || account.getPassword().length() < 4 || account.getUsername() ==null || account.getUsername().isBlank()){
+        if(ac != null || account.getPassword().length() < 4 || account.getUsername() ==null || account.getUsername().isBlank() || account.getPassword() == null){
             return null;
         }
         return accountRepository.save(account);

@@ -36,49 +36,76 @@ public class SocialMediaController {
         this.messageService = messageService;
     }
 
+    //done
     @PostMapping(value ="/register")
     public ResponseEntity<Account> register(@RequestBody Account account){
-        Account ac = accountService.Resgister(account);
+        Account ac = accountService.Register(account);
         if(ac !=null){
             return ResponseEntity.status(200).body(ac);
-        }else{
-
+        }else if(accountService.checkForDup(account) == null){
+            return ResponseEntity.status(409).build();
         }
-        return null;
+        return ResponseEntity.status(400).build();
     }
 
+    //done
     @PostMapping(value = "/login")
     public ResponseEntity<Account> login(@RequestBody Account account){
-        return ResponseEntity.status(200).body(account);
+        Account ac = accountService.Login(account);
+        if(ac != null){
+            return ResponseEntity.status(200).body(account);           
+        }
+        return ResponseEntity.status(401).build();
     }
 
+    //done
     @PostMapping(value = "/messages")
     public ResponseEntity<Message> creationMessage(@RequestBody Message message){
-        return ResponseEntity.status(200).body(message);
+        Message msg = messageService.CreateMessage(message);
+        if(msg != null){
+            return ResponseEntity.ok(msg);
+        }
+        return ResponseEntity.status(400).build();
     }
 
+    //done
     @GetMapping("/messages")
     public ResponseEntity<List<Message>> retrieveAllMessages(){
-        return null;
+        return ResponseEntity.ok(messageService.retrieveAllMessages());
     }
 
     @GetMapping("/messages/{messageId}")
-    public ResponseEntity<List<Message>> retrieveMessageById(@PathVariable Long messageId){
-        return null;
+    public ResponseEntity<Message> retrieveMessageById(@PathVariable Integer messageId){
+        Message msg = messageService.retrieveMessageByID(messageId);
+        if(msg != null){
+            return ResponseEntity.ok(msg);
+        }
+        return ResponseEntity.ok().build();
     }
 
+    //done
     @DeleteMapping("/messages/{messageId}")
-    public Long deleteMessageById(@PathVariable Long messageId ){
-        return null;
+    public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer messageId ){
+        int msgDelNum = messageService.deleteMessageById(messageId);
+        if(msgDelNum > 0){
+            return ResponseEntity.ok(msgDelNum);
+        }
+        return ResponseEntity.ok().build();
     }
 
+    //done
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity<Message> updateMessageById(@PathVariable Long messageId){
-        return null;
+    public ResponseEntity<Integer> updateMessageById(@PathVariable Integer messageId, @RequestBody Message message){
+        Message msgUpd = messageService.updateMessageById(messageId, message);
+        if(msgUpd != null){
+            return ResponseEntity.ok(1);
+        }
+        return ResponseEntity.status(400).build();
     }
 
+    //done
     @GetMapping("/accounts/{accountId}/messages")
-    public ResponseEntity<List<Message>> retrieveAllMessagesByUser(){
-        return null;
+    public ResponseEntity<List<Message>> retrieveAllMessagesByUser(@PathVariable Integer accountId){
+        return ResponseEntity.ok(messageService.retrieveMessagesByUser(accountId));
     }
 }
