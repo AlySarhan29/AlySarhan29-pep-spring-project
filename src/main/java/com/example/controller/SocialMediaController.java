@@ -53,7 +53,7 @@ public class SocialMediaController {
     public ResponseEntity<Account> login(@RequestBody Account account){
         Account ac = accountService.Login(account);
         if(ac != null){
-            return ResponseEntity.status(200).body(account);           
+            return ResponseEntity.status(200).body(ac);           
         }
         return ResponseEntity.status(401).build();
     }
@@ -64,8 +64,10 @@ public class SocialMediaController {
         Message msg = messageService.CreateMessage(message);
         if(msg != null){
             return ResponseEntity.ok(msg);
+        }else{
+            return ResponseEntity.status(400).build();
         }
-        return ResponseEntity.status(400).build();
+        
     }
 
     //done

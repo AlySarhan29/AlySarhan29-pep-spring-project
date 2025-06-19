@@ -3,26 +3,34 @@ package com.example.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.entity.Message;
-
+import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class MessageService {
     MessageRepository messageRepository;
+    AccountRepository accountRepository;
 
 
     @Autowired
-    public MessageService(MessageRepository messageRepository){
+    public MessageService(MessageRepository messageRepository, AccountRepository accountRepository){
         this.messageRepository = messageRepository;
+        this.accountRepository = accountRepository;
     }
 
     //done
     public Message CreateMessage(Message message){
         if(message.getMessageText() == null || message.getMessageText().isBlank() || message.getMessageText().length() > 255){
             return null;
+        }
+        if (message.getPostedBy() == null || accountRepository.findById(message.getPostedBy()).isEmpty()) {
+            return null; 
         }
         return messageRepository.save(message);
     }
@@ -47,7 +55,9 @@ public class MessageService {
         if(messageToDel == null){
             return 0;
         }
-        return messageRepository.deleteMessageById(id);
+        // return messageRepository.deleteMessageById(id);
+        messageRepository.deleteById(id);
+        return 1;
     }
 
     //Done
